@@ -1,609 +1,332 @@
-# Security Bot Setup Guide for Linux (Ubuntu/Debian)
+# Discord Security Bot
 
-Complete installation and configuration guide for the Discord Security Bot on Ubuntu/Debian Linux servers.
+An advanced Discord security bot that automatically scans URLs for malicious content, protects servers from threats, and provides comprehensive security monitoring.
 
-## 📋 Table of Contents
+## 🌟 Features
 
-- [Prerequisites](#prerequisites)
-- [System Requirements](#system-requirements)
-- [Installation Steps](#installation-steps)
-- [Database Setup](#database-setup)
-- [Environment Configuration](#environment-configuration)
-- [Bot Configuration](#bot-configuration)
-- [Running the Bot](#running-the-bot)
-- [Process Management](#process-management)
-- [Monitoring & Maintenance](#monitoring--maintenance)
-- [Troubleshooting](#troubleshooting)
-- [Security Considerations](#security-considerations)
+- **Real-time URL Scanning**: Automatically scans all URLs posted in your server
+- **VirusTotal Integration**: Uses VirusTotal API for comprehensive threat detection
+- **AI-Powered Analysis**: Provides intelligent threat analysis using Ollama AI
+- **Automated Protection**: Automatically kicks users and deletes malicious content
+- **Smart Caching**: Reduces API calls with intelligent result caching
+- **Comprehensive Logging**: Detailed security event logging and statistics
+- **Easy Setup**: Interactive setup wizard for quick configuration
+- **Role-Based Permissions**: Configurable admin and immune roles
+- **Database Persistence**: MySQL database for reliable data storage
 
-## 🔧 Prerequisites
+## 🚀 Quick Start
 
-### System Requirements
-- **OS**: Ubuntu 20.04+ or Debian 11+
-- **RAM**: Minimum 2GB (4GB recommended)
-- **Storage**: 10GB free space
-- **Network**: Internet connection for API calls
-- **Ports**: 3306 (MySQL), 11434 (Ollama - optional)
+### Prerequisites
 
-### Required Software
-- Node.js 18+ with npm
-- MySQL 8.0+ or MariaDB 10.6+
-- Git
-- PM2 (for process management)
-- Ollama (optional, for AI analysis)
+- Node.js 18.0.0 or higher
+- MySQL 8.0 or higher
+- Discord Bot Token
+- VirusTotal API Key (optional but recommended)
+- Ollama Server (optional, for AI analysis)
 
-## 🚀 Installation Steps
+### Installation
 
-## 1. Update System Packages
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/discord-security-bot.git
+   cd discord-security-bot
+   ```
 
-### Update package lists
-```sudo apt update && sudo apt upgrade -y```
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-### Install essential packages
-```sudo apt install -y curl wget git build-essential software-properties-common```
+3. **Configure environment variables**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
 
-## 2. Install Node.js 18+
-### Add NodeSource repository
-``curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -``
+4. **Set up the database**
+   ```bash
+   # Create your MySQL database first, then run:
+   npm run db:setup
+   ```
 
-### Install Node.js and npm
-``sudo apt install -y nodejs``
+5. **Start the bot**
+   ```bash
+   npm start
+   ```
 
-### Verify installation
-``node --version``  # Should show v18.x.x or higher
-``npm --version``   # Should show 9.x.x or higher
+## ⚙️ Configuration
 
-## 3. Install MySQL Server
-### Install MySQL server
-``sudo apt install -y mysql-server``
+### Environment Variables
 
-### Secure MySQL installation
-``sudo mysql_secure_installation``
+Create a `.env` file in the root directory with the following variables:
 
-### Start and enable MySQL service
-``sudo systemctl start mysql``
-``sudo systemctl enable mysql``
-
-## 4. Install PM2 Process Manager
-### Install PM2 globally
-``sudo npm install -g pm2``
-
-### Set up PM2 to start on boot
-``pm2 startup``
-``sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER --hp $HOME``
-
-## 5. Install Ollama (Optional - for AI Analysis)
-### Install Ollama
-``curl -fsSL https://ollama.ai/install.sh | sh``
-
-### Start Ollama service
-``sudo systemctl start ollama``
-``sudo systemctl enable ollama``
-
-### Pull the deepseek-v2 model
-``ollama pull deepseek-v2``
-
-# 💾 Database Setup
-
-## 1. Create Database and User
-### Connect to MySQL as root
-``sudo mysql -u root -p``
-
-## Create database and user
-```CREATE DATABASE security_bot;
-CREATE USER 'security_bot'@'localhost' IDENTIFIED BY 'your_secure_password';
-GRANT ALL PRIVILEGES ON security_bot.* TO 'security_bot'@'localhost';
-FLUSH PRIVILEGES;
-EXIT;
-```
-## 2. Test Database Connection
-### Test connection with new user
-``mysql -u security_bot -p security_bot``
-## Enter password when prompted
-## If successful, you'll see MySQL prompt
-``EXIT;``
-
-# 📁 Bot Installation
-## 1. Clone or Create Project
-### Create project directory
-```mkdir /opt/security-bot
-cd /opt/security-bot
-```
-
-### If cloning from repository:
-``git clone https://github.com/your-repo/security-bot.git .``
-
-### Or create files manually (if you have the source files)
-
-## 2. Create Project Structure
-### Create necessary directories
-```mkdir -p /opt/security-bot/logs
-mkdir -p /opt/security-bot/backups
-```
-
-### Set proper ownership
-``sudo chown -R $USER:$USER /opt/security-bot``
-3. Create package.json
-bashcat > package.json << 'EOF'
-{
-  "name": "discord-security-bot",
-  "version": "1.0.0",
-  "description": "Advanced Discord security bot for malicious URL detection",
-  "main": "index.js",
-  "type": "module",
-  "scripts": {
-    "start": "node index.js",
-    "dev": "node --watch index.js",
-    "pm2:start": "pm2 start ecosystem.config.js",
-    "pm2:stop": "pm2 stop security-bot",
-    "pm2:restart": "pm2 restart security-bot",
-    "pm2:logs": "pm2 logs security-bot",
-    "pm2:monit": "pm2 monit"
-  },
-  "keywords": [
-    "discord",
-    "bot",
-    "security",
-    "malware",
-    "phishing",
-    "virustotal"
-  ],
-  "author": "Your Name",
-  "license": "MIT",
-  "dependencies": {
-    "discord.js": "^14.14.1",
-    "dotenv": "^16.3.1",
-    "axios": "^1.6.2",
-    "mysql2": "^3.6.5"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.2"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  }
-}
-EOF
-4. Install Dependencies
-bash# Install all required npm packages
-npm install
-
-# Verify installations
-npm list
-5. Create Source Files
-Create the following files in /opt/security-bot/:
-
-index.js (main bot file)
-security.js (security module)
-db.js (database module)
-setup.js (setup system)
-
-Copy the content from the previous code blocks into these files.
-⚙️ Environment Configuration
-1. Create .env File
-bashcat > .env << 'EOF'
-# Discord Bot Configuration
-TOKEN=your_discord_bot_token_here
-
-# VirusTotal API Configuration
-VIRUSTOTAL_API_KEY=your_virustotal_api_key_here
-
-# Database Configuration
+```env
+# Required
+DISCORD_TOKEN=your_discord_bot_token_here
 DB_HOST=localhost
 DB_PORT=3306
-DB_USER=security_bot
-DB_PASSWORD=your_secure_password
-DB_NAME=security_bot
+DB_USER=your_database_username
+DB_PASSWORD=your_database_password
+DB_NAME=security_bot_db
 
-# Ollama Configuration (Optional)
-OLLAMA_HOST=http://localhost:11434
+# Optional but recommended
+VIRUSTOTAL_API_KEY=your_virustotal_api_key_here
+OLLAMA_SERVER_URL=http://localhost:11434/api
+STARTUP_LOG_CHANNEL=your_startup_log_channel_id
+```
 
-# Environment
-NODE_ENV=production
-EOF
+### Discord Bot Setup
 
-# Secure the .env file
-chmod 600 .env
-2. Configure Environment Variables
-bash# Edit .env file with your actual values
-nano .env
+1. Go to [Discord Developer Portal](https://discord.com/developers/applications)
+2. Create a new application and bot
+3. Copy the bot token and add it to your `.env` file
+4. Enable the following bot permissions:
+   - Send Messages
+   - Embed Links
+   - Read Message History
+   - Manage Messages
+   - Kick Members
+   - View Channels
+5. Enable the following privileged gateway intents:
+   - Server Members Intent
+   - Message Content Intent
+6. Invite the bot to your server with the required permissions
 
-# Required values to replace:
-# - TOKEN: Your Discord bot token from Discord Developer Portal
-# - VIRUSTOTAL_API_KEY: Your VirusTotal API key
-# - DB_PASSWORD: The password you set for security_bot MySQL user
-🤖 Bot Configuration
-1. Discord Bot Setup
+### Database Setup
 
-Create Discord Application:
+The bot requires a MySQL database. Create the database and update your `.env` file:
 
-Go to https://discord.com/developers/applications
-Click "New Application"
-Name it "Security Bot"
-Go to "Bot" section
-Click "Add Bot"
-Copy the token to your .env file
+```sql
+CREATE DATABASE security_bot_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'security_bot'@'localhost' IDENTIFIED BY 'your_secure_password';
+GRANT ALL PRIVILEGES ON security_bot_db.* TO 'security_bot'@'localhost';
+FLUSH PRIVILEGES;
+```
 
+## 📊 Database Schema
 
-Set Bot Permissions:
+The bot automatically creates the following tables:
 
-In Discord Developer Portal, go to "OAuth2" → "URL Generator"
-Select "bot" scope
-Select these permissions:
+- **`blockedList`** - Stores malicious domains and URLs
+- **`blockedMessages`** - Logs blocked messages and user actions
+- **`url_scan_cache`** - Caches scan results to reduce API usage
+- **`server_config`** - Stores per-server configuration settings
+- **`bot_stats`** - Daily statistics and metrics
+- **`security_events`** - Detailed security event logging
+- **`user_warnings`** - User warning system
 
-Read Messages/View Channels
-Send Messages
-Embed Links
-Read Message History
-Kick Members
-Manage Messages
+## 🎛️ Bot Commands
 
+The bot primarily works automatically, but includes these management features:
 
+### Setup Commands
+- **Interactive Setup**: When added to a server, the bot sends a DM with setup instructions
+- **Setup Wizard**: Click the setup button to configure the bot for your server
 
+### Admin Features
+- Real-time threat monitoring
+- Configurable security actions
+- Role-based permissions
+- Comprehensive logging
 
-Invite Bot to Server:
+## 🔧 Configuration Options
 
-Use the generated URL to invite bot to your server
-Make sure you have "Manage Server" permission
+### Security Settings
 
+- **Auto-kick**: Automatically kick users who post malicious URLs
+- **Auto-delete**: Delete messages containing malicious content
+- **URL Scanning**: Enable/disable URL scanning (not recommended to disable)
 
+### Role Configuration
 
-2. VirusTotal API Setup
+- **Admin Roles**: Roles that can manage bot settings
+- **Immune Roles**: Roles that bypass all security scanning (use carefully)
 
-Get API Key:
+### Logging
 
-Go to https://www.virustotal.com/
-Create account or login
-Go to your profile → API Key
-Copy the key to your .env file
+- **Log Channel**: Channel where security events are logged
+- **Event Types**: Malicious URL detections, user actions, bot status
 
+## 🛡️ Security Features
 
-API Limits (Free Tier):
+### URL Scanning Process
 
-4 requests per minute
-500 requests per day
-The bot automatically handles rate limiting
+1. **Real-time Detection**: All messages are scanned for URLs
+2. **Cache Check**: First checks local cache for known results
+3. **Blocklist Check**: Compares against known malicious domains
+4. **VirusTotal Scan**: Uses VirusTotal API for comprehensive analysis
+5. **AI Analysis**: Optional AI-powered threat assessment
+6. **Action Execution**: Automatic response based on configuration
 
+### Threat Detection
 
+- **Multiple Engines**: VirusTotal uses 70+ antivirus engines
+- **Threat Categories**: Phishing, malware, trojans, suspicious sites
+- **False Positive Handling**: Smart thresholds to minimize false positives
+- **Rate Limiting**: Respects API limits with intelligent queuing
 
-3. Create PM2 Ecosystem File
-bashcat > ecosystem.config.js << 'EOF'
-module.exports = {
-  apps: [{
-    name: 'security-bot',
-    script: 'index.js',
-    cwd: '/opt/security-bot',
-    instances: 1,
-    exec_mode: 'fork',
-    watch: false,
-    max_memory_restart: '500M',
-    env: {
-      NODE_ENV: 'production'
-    },
-    error_file: './logs/err.log',
-    out_file: './logs/out.log',
-    log_file: './logs/combined.log',
-    time: true,
-    autorestart: true,
-    max_restarts: 10,
-    min_uptime: '10s'
-  }]
-}
-EOF
-🎯 Running the Bot
-1. Test Run (Development)
-bash# Test the bot manually first
-cd /opt/security-bot
-npm start
+### Automated Response
 
-# Check for any errors
-# Press Ctrl+C to stop
-2. Production Run with PM2
-bash# Start the bot with PM2
-npm run pm2:start
+When a malicious URL is detected:
+1. Message is immediately deleted
+2. User is kicked from the server
+3. Recent messages from user are cleaned up
+4. Domain is added to blocklist
+5. Security event is logged
+6. Admin notifications are sent
 
-# Check status
-pm2 status
+## 📈 Monitoring & Statistics
 
-# View logs
-pm2 logs security-bot
+### Real-time Status
 
-# Monitor in real-time
-pm2 monit
-3. Save PM2 Configuration
-bash# Save current PM2 processes
-pm2 save
+The bot displays live statistics in its status:
+- Number of servers protected
+- Threats blocked today
+- Messages scanned
+- Current uptime
+- Cache performance
 
-# This ensures the bot starts automatically on system reboot
-📊 Process Management
-Common PM2 Commands
-bash# Start the bot
-pm2 start security-bot
+### Daily Reports
 
-# Stop the bot
-pm2 stop security-bot
+Automatic generation of:
+- Threat detection summaries
+- Server protection statistics
+- API usage metrics
+- Performance analytics
 
-# Restart the bot
-pm2 restart security-bot
+## 🔒 Security Considerations
 
-# View logs
-pm2 logs security-bot --lines 100
+### Privacy
 
-# Monitor resources
-pm2 monit
+- Only URLs are analyzed, not message content
+- No personal data is stored beyond Discord IDs
+- Scan results are cached temporarily for performance
+- Logs can be automatically purged after configured time
 
-# View detailed info
-pm2 describe security-bot
+### Performance
 
-# Delete process (removes from PM2)
-pm2 delete security-bot
-Log Management
-bash# Rotate logs (prevents large log files)
-pm2 install pm2-logrotate
+- Intelligent caching reduces API calls
+- Rate limiting prevents API quota exhaustion
+- Async processing prevents bot delays
+- Database optimization for high-volume servers
 
-# Configure log rotation
-pm2 set pm2-logrotate:max_size 10M
-pm2 set pm2-logrotate:retain 7
-pm2 set pm2-logrotate:compress true
+### Reliability
 
-# View log files directly
-tail -f /opt/security-bot/logs/combined.log
-🔍 Monitoring & Maintenance
-1. System Monitoring
-bash# Check system resources
-htop
+- Graceful error handling
+- Automatic reconnection to database
+- Fallback modes if external services are unavailable
+- Comprehensive logging for debugging
 
-# Check disk usage
-df -h
+## 🚨 Troubleshooting
 
-# Check memory usage
-free -h
+### Common Issues
 
-# Monitor MySQL
-sudo systemctl status mysql
+**Bot not responding to URLs:**
+- Check if URL scanning is enabled in server config
+- Verify bot has necessary permissions
+- Check VirusTotal API key validity
 
-# Monitor Ollama (if installed)
-sudo systemctl status ollama
-2. Database Maintenance
-bash# Create backup script
-cat > /opt/security-bot/backup.sh << 'EOF'
-#!/bin/bash
-DATE=$(date +%Y%m%d_%H%M%S)
-BACKUP_DIR="/opt/security-bot/backups"
-mysqldump -u security_bot -p security_bot > $BACKUP_DIR/security_bot_$DATE.sql
-find $BACKUP_DIR -name "*.sql" -mtime +7 -delete
-echo "Backup completed: security_bot_$DATE.sql"
-EOF
+**Database connection errors:**
+- Verify database credentials in `.env`
+- Ensure MySQL server is running
+- Check database user permissions
 
-# Make executable
-chmod +x /opt/security-bot/backup.sh
+**Setup wizard not working:**
+- Ensure bot has permission to send DMs
+- Check if user has Administrator permission
+- Verify bot is properly added to server
 
-# Add to crontab for daily backups
-(crontab -l 2>/dev/null; echo "0 2 * * * /opt/security-bot/backup.sh") | crontab -
-3. Update Management
-bash# Create update script
-cat > /opt/security-bot/update.sh << 'EOF'
-#!/bin/bash
-cd /opt/security-bot
+### Error Codes
 
-# Stop the bot
-pm2 stop security-bot
+- `VT_RATE_LIMITED`: VirusTotal API rate limit exceeded
+- `DB_CONNECTION_FAILED`: Database connection issue
+- `INSUFFICIENT_PERMISSIONS`: Bot lacks required permissions
+- `SETUP_INCOMPLETE`: Server setup not completed
 
-# Backup current version
-cp -r . ../security-bot-backup-$(date +%Y%m%d)
+## 📝 API Integration
 
-# Pull updates (if using git)
-# git pull origin main
+### VirusTotal API
 
-# Update dependencies
+The bot integrates with VirusTotal for comprehensive URL scanning:
+- **Free Tier**: 4 requests/minute, 500 requests/day
+- **Premium Tier**: Higher limits available
+- **Fallback**: Works without API key but with reduced functionality
+
+### Ollama AI Integration
+
+Optional AI analysis for enhanced threat detection:
+- Local AI server for privacy
+- Contextual threat analysis
+- Natural language threat descriptions
+- Configurable AI models
+
+## 🔄 Updates & Maintenance
+
+### Automatic Maintenance
+
+The bot performs automatic maintenance:
+- Cache cleanup every hour
+- Database optimization daily
+- Log rotation based on retention settings
+- Performance statistics collection
+
+### Manual Maintenance
+
+Recommended periodic tasks:
+- Review and update blocklist
+- Monitor API usage and costs
+- Check server configurations
+- Update bot permissions as needed
+
+## 🤝 Contributing
+
+We welcome contributions! Please:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+### Development Setup
+
+```bash
+# Clone your fork
+git clone https://github.com/yourusername/discord-security-bot.git
+cd discord-security-bot
+
+# Install dependencies
 npm install
 
-# Restart the bot
-pm2 restart security-bot
+# Set up development environment
+cp .env.example .env.dev
+# Configure .env.dev for development
 
-echo "Update completed successfully"
-EOF
+# Run in development mode
+npm run dev
+```
 
-# Make executable
-chmod +x /opt/security-bot/update.sh
-🔧 Troubleshooting
-Common Issues and Solutions
-Bot Won't Start
-bash# Check logs for errors
-pm2 logs security-bot
+## 📄 License
 
-# Common issues:
-# 1. Invalid token - check .env file
-# 2. Database connection - test MySQL connection
-# 3. Missing permissions - check file ownership
-# 4. Port conflicts - check if ports are available
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-# Test database connection
-mysql -u security_bot -p security_bot
+## 🆘 Support
 
-# Check file permissions
-ls -la /opt/security-bot/
-Database Connection Issues
-bash# Check MySQL status
-sudo systemctl status mysql
+Need help? Here's how to get support:
 
-# Test connection
-mysql -u security_bot -p
+1. **Documentation**: Check this README and code comments
+2. **Issues**: Create a GitHub issue for bugs or feature requests
+3. **Discussions**: Use GitHub Discussions for questions
+4. **Discord**: Join our support server (link in repository)
 
-# Check MySQL logs
-sudo tail -f /var/log/mysql/error.log
+## 🙏 Acknowledgments
 
-# Reset MySQL password if needed
-sudo mysql -u root -p
-ALTER USER 'security_bot'@'localhost' IDENTIFIED BY 'new_password';
-FLUSH PRIVILEGES;
-VirusTotal API Issues
-bash# Test API key manually
-curl -X GET "https://www.virustotal.com/vtapi/v2/url/report" \
-  -d "apikey=YOUR_API_KEY" \
-  -d "resource=google.com"
+- **Discord.js**: Excellent Discord API library
+- **VirusTotal**: Comprehensive threat intelligence
+- **MySQL**: Reliable database system
+- **Ollama**: Local AI integration
+- **Community**: Contributors and users who make this project better
 
-# Check rate limits in bot logs
-pm2 logs security-bot | grep -i "rate limit"
-Memory Issues
-bash# Check memory usage
-free -h
+---
 
-# Increase swap if needed
-sudo fallocate -l 2G /swapfile
-sudo chmod 600 /swapfile
-sudo mkswap /swapfile
-sudo swapon /swapfile
-
-# Add to /etc/fstab for persistence
-echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
-Log Analysis
-bash# Search for specific errors
-pm2 logs security-bot | grep -i error
-
-# Check last 100 lines
-pm2 logs security-bot --lines 100
-
-# Follow logs in real-time
-pm2 logs security-bot --follow
-
-# Save logs to file
-pm2 logs security-bot --lines 1000 > bot_logs.txt
-🔒 Security Considerations
-1. File Permissions
-bash# Set secure permissions
-chmod 700 /opt/security-bot
-chmod 600 /opt/security-bot/.env
-chmod 644 /opt/security-bot/*.js
-chmod 755 /opt/security-bot/*.sh
-2. Firewall Configuration
-bash# Install UFW if not installed
-sudo apt install ufw
-
-# Default policies
-sudo ufw default deny incoming
-sudo ufw default allow outgoing
-
-# Allow SSH (replace 22 with your SSH port)
-sudo ufw allow 22
-
-# Allow MySQL only from localhost (if needed)
-sudo ufw allow from 127.0.0.1 to any port 3306
-
-# Enable firewall
-sudo ufw enable
-
-# Check status
-sudo ufw status
-3. Regular Updates
-bash# Create security update script
-cat > /opt/security-bot/security-update.sh << 'EOF'
-#!/bin/bash
-# System updates
-sudo apt update && sudo apt upgrade -y
-
-# Node.js security updates
-npm audit fix
-
-# PM2 updates
-pm2 update
-
-echo "Security updates completed"
-EOF
-
-# Schedule weekly security updates
-(crontab -l 2>/dev/null; echo "0 3 * * 0 /opt/security-bot/security-update.sh") | crontab -
-4. Monitoring Setup
-bash# Install fail2ban for additional security
-sudo apt install fail2ban
-
-# Configure basic protection
-sudo systemctl enable fail2ban
-sudo systemctl start fail2ban
-📈 Performance Optimization
-1. MySQL Optimization
-bash# Edit MySQL configuration
-sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
-
-# Add these lines under [mysqld]:
-# innodb_buffer_pool_size = 256M
-# query_cache_limit = 1M
-# query_cache_size = 16M
-# max_connections = 50
-
-# Restart MySQL
-sudo systemctl restart mysql
-2. Node.js Optimization
-bash# Set Node.js environment variables
-echo 'export NODE_OPTIONS="--max-old-space-size=512"' >> ~/.bashrc
-source ~/.bashrc
-3. System Optimization
-bash# Increase file descriptor limits
-echo '* soft nofile 65535' | sudo tee -a /etc/security/limits.conf
-echo '* hard nofile 65535' | sudo tee -a /etc/security/limits.conf
-
-# Optimize network settings
-echo 'net.core.somaxconn = 1024' | sudo tee -a /etc/sysctl.conf
-sudo sysctl -p
-🎉 Final Steps
-1. Verify Installation
-bash# Check all services
-sudo systemctl status mysql
-pm2 status
-pm2 logs security-bot --lines 20
-
-# Test bot in Discord
-# - Invite bot to your server
-# - Use setup commands to configure
-# - Test with a known malicious URL
-2. Documentation
-bash# Create installation log
-cat > /opt/security-bot/INSTALLATION.md << EOF
-# Security Bot Installation Log
-
-**Installation Date:** $(date)
-**Server:** $(hostname)
-**OS:** $(lsb_release -d | cut -f2)
-**Node.js:** $(node --version)
-**MySQL:** $(mysql --version)
-
-## Configuration
-- Database: security_bot
-- Bot User: security_bot
-- Log Location: /opt/security-bot/logs/
-- Backup Location: /opt/security-bot/backups/
-
-## Important Commands
-- Start: pm2 start security-bot
-- Stop: pm2 stop security-bot
-- Logs: pm2 logs security-bot
-- Backup: /opt/security-bot/backup.sh
-
-## Maintenance Schedule
-- Daily: Automatic backups at 2 AM
-- Weekly: Security updates on Sunday 3 AM
-- Monthly: Full system review
-
-EOF
-3. Success Checklist
-
- Bot appears online in Discord
- Database tables created successfully
- VirusTotal API working (check logs)
- PM2 process running stable
- Backup script working
- All log files being written
- Bot responds to setup commands
- Security scanning functional
-
-📞 Support
-If you encounter issues:
-
-Check Logs: pm2 logs security-bot
-Verify Configuration: Review .env file
-Test Components: Database, API keys, permissions
-Search Documentation: This guide covers most scenarios
-System Resources: Ensure adequate RAM/disk space
-
-
-Congratulations! Your Discord Security Bot is now installed and running. The bot will automatically protect your Discord server from malicious URLs, phishing attempts, and other security threats.
+**⚠️ Important Security Notice**: This bot automatically kicks users and deletes messages when malicious content is detected. Ensure proper configuration and testing before deploying in production environments.
