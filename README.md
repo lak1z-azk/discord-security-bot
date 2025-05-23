@@ -8,6 +8,9 @@ Initial results are positive, but more feedback and real-world usage are needed.
 
 This is my first time building this kind of modular, persistent security structure for Discord servers. My main motivation is that phishing, scam, and malware attacks are getting out of control on Discord — and many people are still being caught. This bot is my way to help put a stop to that.
 
+![image](https://github.com/user-attachments/assets/bd22e609-10d2-41d0-bc51-f966d281c87e)
+
+
 ---
 
 ## 🚨 Important Requirements & Notes
