@@ -153,6 +153,7 @@ Stay secure, and keep your community safe!
 5. Use the **Import Data** feature to import from CSV.
     - In DBeaver:  
       - Right-click the `blockedList` table → select **Import Data** (see screenshot below).
+        ![image](https://github.com/user-attachments/assets/74d07be7-b59b-4a8a-8127-b33f25d5aabd)
       - Choose **CSV** as the import source, select `malicious_urls.csv`, and follow the prompts.
     - Make sure the CSV column is mapped to the `list` column in the `blockedList` table.
 6. Complete the import wizard and commit changes.
