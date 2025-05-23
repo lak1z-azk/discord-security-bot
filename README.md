@@ -122,4 +122,27 @@ MIT License
 
 Stay secure, and keep your community safe!
 
+---
 
+## 🦠 Massive Community Blocklist (10,000+ Malicious URLs)
+
+To provide the highest level of protection for Discord communities, this bot ships with a **community-maintained blocklist** of over **10,000** known phishing, scam, and malware domains.
+
+- The latest list is included in the repo as [`malicious_urls.csv`](./malicious_urls.csv).
+- The bot **automatically imports and updates** the blocklist into its database on first launch (or when you restart the bot after updating the CSV).
+- **Regular updates:** The CSV will be updated frequently. For the best protection, always pull the latest file from this repo before starting your bot.
+
+### How to Use the Blocklist
+
+1. Ensure `malicious_urls.csv` (with 10,000+ entries) is present in your bot directory.
+2. On startup, the bot will scan and import all new malicious domains into its database.
+3. **Keep it current!** When a new version of the CSV is released, overwrite the old one and restart the bot.
+
+**Why this matters:**
+- Even without a VirusTotal API key, your community is immediately protected from thousands of active threats.
+- No API calls are needed to block CSV-listed domains—making protection instant and unlimited.
+- The community CSV is often faster to update than traditional antivirus or public blacklists.
+
+> **Keeping your CSV blocklist updated is the best way to protect your Discord from emerging scams and attacks!**
+
+---
