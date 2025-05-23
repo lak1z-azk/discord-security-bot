@@ -159,4 +159,23 @@ Stay secure, and keep your community safe!
 
 **Keep your community protected by importing the latest blocklist regularly!**
 
+---
 
+## 🧪 Testing & Best Practices
+
+**Before deploying this bot to your main community, it’s strongly recommended to:**
+
+- **Create a separate Discord account** (or use an alt/test account).
+- **Set up a private Discord test server** where you have full admin control.
+- **Invite the bot** to this test server and run through the full setup process.
+- **Simulate real attacks:**  
+  - Try posting known phishing or scam URLs (from the blocklist or VirusTotal) to see how the bot responds.
+  - Test permissions, role setups, and logging to make sure everything works as expected.
+
+> **Why?**  
+> This will help you understand the bot’s functionality, ensure you’re comfortable with all features, and avoid surprises on your main server.
+
+**If you find any bugs, unclear behavior, or missing features, please open an issue here on GitHub!**  
+Feedback from testing is what makes this project better for everyone.
+
+---
