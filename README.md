@@ -36,20 +36,21 @@ Complete installation and configuration guide for the Discord Security Bot on Ub
 
 ### 1. Update System Packages
 
-```bash
 # Update package lists
-sudo apt update && sudo apt upgrade -y
+```sudo apt update && sudo apt upgrade -y```
 
 # Install essential packages
-sudo apt install -y curl wget git build-essential software-properties-common
+```sudo apt install -y curl wget git build-essential software-properties-common```
 
 ### 2. Install Node.js 18+
-bash# Add NodeSource repository
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+# Add NodeSource repository
+``curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -``
 
 # Install Node.js and npm
-sudo apt install -y nodejs
+``sudo apt install -y nodejs``
 
 # Verify installation
-node --version  # Should show v18.x.x or higher
-npm --version   # Should show 9.x.x or higher
+``node --version``  # Should show v18.x.x or higher
+``npm --version``   # Should show 9.x.x or higher
+
+# 3. Install MySQL Server
