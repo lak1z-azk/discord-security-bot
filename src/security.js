@@ -14,7 +14,7 @@ export function setUpdateThreatCounter(callback) {
 
 config();
 
-const OLLAMA_SERVER_URL = process.env.OLLAMA_SERVER_URL || "http://192.168.0.162:11434/api";
+const OLLAMA_SERVER_URL = process.env.OLLAMA_SERVER_URL || "http://localhost:11434/api";
 const VIRUSTOTAL_API_KEY = process.env.VIRUSTOTAL_API_KEY;
 const VIRUSTOTAL_API_URL = "https://www.virustotal.com/vtapi/v2/url";
 
