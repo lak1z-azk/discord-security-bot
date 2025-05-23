@@ -144,25 +144,19 @@ Stay secure, and keep your community safe!
 
 ---
 
-## 🦠 Massive Community Blocklist (10,000+ Malicious URLs)
+### How to Import the Blocklist (Recommended Method)
 
-To provide the highest level of protection for Discord communities, this bot ships with a **community-maintained blocklist** of over **10,000** known phishing, scam, and malware domains.
+1. Make sure `malicious_urls.csv` (with 10,000+ entries) is present in your bot directory or on your computer.
+2. Open your database tool (for example, **DBeaver**, HeidiSQL, MySQL Workbench, etc.).
+3. Connect to your bot’s MySQL database.
+4. Locate/select the `blockedList` table.
+5. Use the **Import Data** feature to import from CSV.
+    - In DBeaver:  
+      - Right-click the `blockedList` table → select **Import Data** (see screenshot below).
+      - Choose **CSV** as the import source, select `malicious_urls.csv`, and follow the prompts.
+    - Make sure the CSV column is mapped to the `list` column in the `blockedList` table.
+6. Complete the import wizard and commit changes.
 
-- The latest list is included in the repo as [`malicious_urls.csv`](./malicious_urls.csv).
-- The bot **automatically imports and updates** the blocklist into its database on first launch (or when you restart the bot after updating the CSV).
-- **Regular updates:** The CSV will be updated frequently. For the best protection, always pull the latest file from this repo before starting your bot.
+**Keep your community protected by importing the latest blocklist regularly!**
 
-### How to Use the Blocklist
 
-1. Ensure `malicious_urls.csv` (with 10,000+ entries) is present in your bot directory.
-2. On startup, the bot will scan and import all new malicious domains into its database.
-3. **Keep it current!** When a new version of the CSV is released, overwrite the old one and restart the bot.
-
-**Why this matters:**
-- Even without a VirusTotal API key, your community is immediately protected from thousands of active threats.
-- No API calls are needed to block CSV-listed domains—making protection instant and unlimited.
-- The community CSV is often faster to update than traditional antivirus or public blacklists.
-
-> **Keeping your CSV blocklist updated is the best way to protect your Discord from emerging scams and attacks!**
-
----
