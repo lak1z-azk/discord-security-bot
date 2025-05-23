@@ -3,6 +3,27 @@
 A powerful, modern Discord security and moderation bot focused on automatic URL scanning, anti-phishing, malicious domain blocklisting, AI-driven threat analysis, and advanced auto-moderation features for your community.  
 Supports interactive, multi-step setup per server, flexible configuration, and persistent MySQL storage for logging and threat tracking.
 
+**Note: This project is still in its early testing phase!**  
+Initial results are positive, but more feedback and real-world usage are needed. If you have any issues, questions, or suggestions about how the bot works, please use [GitHub Issues](https://github.com/lak1z-azk/wolf-guard/issues) — I will do my best to answer as soon as possible.
+
+This is my first time building this kind of modular, persistent security structure for Discord servers. My main motivation is that phishing, scam, and malware attacks are getting out of control on Discord — and many people are still being caught. This bot is my way to help put a stop to that.
+
+---
+
+## 🚨 Important Requirements & Notes
+
+- **VirusTotal API:**  
+  To fully use automatic URL scanning, you need to register for a [VirusTotal account](https://www.virustotal.com/gui/join-us) and get an API key.  
+  *The free API is limited (4 requests/minute, 500/day), but this is enough for most community servers.*
+- **LLM/Ollama Support (Optional):**  
+  If you want detailed AI threat summaries, set up [Ollama](https://ollama.com/) locally and provide the API endpoint in your `.env`.  
+  This is not required, but will provide better analysis and reporting for server owners and admins.
+- **Discord Bot Application:**  
+  You **must** create your own Discord bot application at [Discord Developer Portal](https://discord.com/developers/applications), copy your bot token, and invite the bot to your server with appropriate permissions.
+- **Setup Permissions:**  
+  *Currently, only the server owner is able to run the initial setup wizard.*  
+  (If you want to let admins do it too, let me know — this can be changed.)
+
 ---
 
 ## ✨ Features
@@ -63,8 +84,7 @@ Once you invite the bot, it does not need any manual config files or editing—e
 
 ## Interactive Setup Wizard
 ### Trigger setup:
-- The bot will DM the server owner and admins when added, or you can use the provided setup button.
-- Only users with Administrator permissions (or optionally, roles you set as "admin roles") can run setup.
+- The bot will DM the server owner when added.
 ### Setup Steps:
 - Select a Log Channel for security reports.
 - Choose Admin Roles (who can manage the bot and view logs).
