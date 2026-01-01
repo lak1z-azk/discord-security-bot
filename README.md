@@ -141,7 +141,7 @@ The bot requires these permissions:
 
 # 📜 License
 MIT License
-(c) 2024 [Your Name or Organization]
+(c) 2024 
 
 Stay secure, and keep your community safe!
 
